@@ -10,13 +10,13 @@ QuaduinoSensors::QuaduinoSensors() {
 
 void QuaduinoSensors::init() {
   MPU = MPU9150Lib();
-  Serial.print("... ");
+
   magHeading = 0.0;
   areSensorsReady = false;
 
   if(MPU.init(MPU_UPDATE_RATE, MPU_MAG_MIX_GYRO_AND_MAG)) {
     areSensorsReady = true;
-    Serial.println("sensors complete.");
+    Serial.println("... sensors complete.");
   }
 }
 
@@ -133,10 +133,10 @@ float QuaduinoSensors::getYaw() {
 }
 
 float QuaduinoSensors::getPitch() {
-  return  yawPitchRoll[1];
+  return  yawPitchRoll[0];
 }
 
 float QuaduinoSensors::getRoll() {
-  return yawPitchRoll[0];
+  return yawPitchRoll[1];
 }
 

@@ -6,6 +6,7 @@
 
 class QuaduinoFlight {
 private:
+  unsigned long altitudeCurrent;
 
   int frontMotorValue;
   int rightMotorValue;

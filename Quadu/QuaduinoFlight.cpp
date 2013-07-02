@@ -32,6 +32,8 @@ void QuaduinoFlight::init() {
   aggKd = 0.2;
 
   angleToSwap = 15;
+  
+  altitudeCurrent = 0;
 
   analogWrite(FRONT_MOTOR, 0);
   analogWrite(RIGHT_MOTOR, 0);
@@ -83,8 +85,6 @@ void QuaduinoFlight::setupPidControl() {
   yawPID.SetSampleTime(10);
   yawPID.SetMode(AUTOMATIC);
   yawTuningActive = true;
-
-  //altitude_tuning_active = false;
 
   yawSetpoint = 0.0; // no rotation
   rollSetpoint = 182; // level
@@ -164,7 +164,15 @@ void QuaduinoFlight::runMotorsFullrangeGradual() {
 boolean QuaduinoFlight::adjustPitch(double pitchIn) { //Aiming for ~0.5
   if (pitchTuningActive) {
     // use orientation's "pitch" angle in degrees (passed as argument)
-    pitchInput = pitchIn;
+    if(pitchIn < 360/2) {
+      pitchInput = map(pitchIn, 0, 180, 180,0);
+    } else if(pitchIn >= 360/2) {
+      pitchInput = map(pitchIn, 180, 360, 360, 180);
+    }
+    
+    Serial.print(pitchInput);
+    
+    //pitchInput = pitchIn;
     //pitchSetpoint = 0.5; // should be = 0.5 +/- what we want to move by..
 
     /*
@@ -188,6 +196,7 @@ boolean QuaduinoFlight::adjustPitch(double pitchIn) { //Aiming for ~0.5
   
       analogWrite(REAR_MOTOR, rearMotorValue);
       analogWrite(FRONT_MOTOR, frontMotorValue);
+      
       return true;
     }
   }
@@ -205,12 +214,8 @@ boolean QuaduinoFlight::adjustPitch(double pitchIn) { //Aiming for ~0.5
 boolean QuaduinoFlight::adjustRoll(double rollIn) { //looking for 90
   if (rollTuningActive) {
     // use orientation's "roll" angle in degrees (passed as argument)
-    if(rollIn < 360/2) {
-      rollInput = map(rollIn, 0, 180, 180, 0);
-    } else if(rollIn >= 360/2) {
-      rollInput = map(rollIn, 180, 360, 360, 180);
-    }
-
+    Serial.print(rollIn);
+    
     // determine appropriate PID tunings
     /*
     double temp = rollInput - rollSetpoint;
@@ -232,6 +237,7 @@ boolean QuaduinoFlight::adjustRoll(double rollIn) { //looking for 90
 
       analogWrite(LEFT_MOTOR, leftMotorValue);
       analogWrite(RIGHT_MOTOR, rightMotorValue);
+      
       return true;
     }
   }
@@ -242,6 +248,12 @@ boolean QuaduinoFlight::adjustRoll(double rollIn) { //looking for 90
 void QuaduinoFlight::increaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t throttle) {
   unsigned long startFrame = startSeconds*74;
   unsigned long endFrame = startFrame + timePeriod*74;
+  
+  if(timePeriod > 5) {
+    killMotors(currentFrame, startSeconds, timePeriod);
+    return;
+  }
+  
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
     altitudeSetpoint = throttle;
     Serial.println("increasing alt.");
@@ -327,8 +339,8 @@ void QuaduinoFlight::killMotors(unsigned long *currentFrame, unsigned long start
   unsigned long endFrame = startFrame + timePeriod*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
     runMotorsMin();
-    rollTuningActive = false;
-    pitchTuningActive = false;
+    //rollTuningActive = false;
+    //pitchTuningActive = false;
   }
 }
 

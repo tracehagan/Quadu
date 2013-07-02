@@ -160,12 +160,13 @@ void loop() {
     commDevice.serialSendQuadStatus(sensorPackage, flightController, 1);
   }
   */
+  
 
-  //if(flightController.areMotorsActive() && sensorPackage.getBatteryPercent()>= 60) {
+  if(flightController.areMotorsActive() && sensorPackage.getBatteryPercent()>= 60) {
     // Flight Commands
     flightController.hover(&frameCount, 0, 3);
     
-    flightController.increaseAltitude(&frameCount, 3, 9, 30);
+    //flightController.increaseAltitude(&frameCount, 3, 9, 30);
     
     flightController.hover(&frameCount, 9, 10);
     
@@ -175,38 +176,14 @@ void loop() {
     flightController.moveBackward(&frameCount, 25, 30, 25);
     
     flightController.hover(&frameCount, 30, 40);
+    //flightController.killMotors(&frameCount, 0, 20);
     
-    flightController.killMotors(&frameCount, 18, 20);
-    
-    /*
-    void QuaduinoFlight::increaseAltitude(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame, uint8_t throttle) 
-    
-    
-        
-    if(frameCount <= 150) {
-      Serial.println("Waiting.");
-    } else if(frameCount >= 150 && frameCount < 300) {
-      Serial.println("increasing altitude.");
-      flightController.setThrottle(35);
-    } else if(frameCount >= 300 && frameCount < 2000 ) {
-      Serial.println("maintaining altitude.");
-      flightController.hover();
-    } else if(frameCount >= 2000 ) {
-      analogWrite(FRONT_MOTOR, 0);
-      analogWrite(REAR_MOTOR, 0);
-      analogWrite(RIGHT_MOTOR, 0);
-      analogWrite(LEFT_MOTOR, 0);
-    } else {
-      Serial.println();
-    }
-    */
-  
+    //It's this one.
     
     // Adjust all PIDs before applying to motors
-    if(flightController.adjustRoll(sensorPackage.getRoll()) && flightController.adjustPitch(sensorPackage.getPitch())){
-      
+    if(flightController.adjustRoll(sensorPackage.getRoll()) && flightController.adjustPitch(sensorPackage.getPitch())) {
     }
-  //}
+  }
   
   // Every 13500 microseconds, increment our frame counter.
   // 74.074074074.. frames per second
