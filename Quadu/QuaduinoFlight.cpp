@@ -257,7 +257,7 @@ void QuaduinoFlight::hover(unsigned long *currentFrame, unsigned long startSecon
   }
 }
 
-void QuaduinoFlight::moveLeft(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endFrame, uint8_t travelSpeed) {
+void QuaduinoFlight::moveLeft(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed) {
   unsigned long startFrame = startSeconds*74;
   unsigned long endFrame = startFrame + timePeriod*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
@@ -269,7 +269,7 @@ void QuaduinoFlight::moveLeft(unsigned long *currentFrame, unsigned long startSe
   }
 }
 
-void QuaduinoFlight::moveRight(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endFrame, uint8_t travelSpeed) {
+void QuaduinoFlight::moveRight(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed) {
   unsigned long startFrame = startSeconds*74;
   unsigned long endFrame = startFrame + timePeriod*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
@@ -281,7 +281,7 @@ void QuaduinoFlight::moveRight(unsigned long *currentFrame, unsigned long startS
   }
 }
 
-void QuaduinoFlight::moveForward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endFrame, uint8_t travelSpeed) {
+void QuaduinoFlight::moveForward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed) {
   unsigned long startFrame = startSeconds*74;
   unsigned long endFrame = startFrame + timePeriod*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
@@ -293,7 +293,7 @@ void QuaduinoFlight::moveForward(unsigned long *currentFrame, unsigned long star
   }
 }
 
-void QuaduinoFlight::moveBackward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endFrame, uint8_t travelSpeed) {
+void QuaduinoFlight::moveBackward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed) {
   unsigned long startFrame = startSeconds*74;
   unsigned long endFrame = startFrame + timePeriod*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
@@ -305,7 +305,7 @@ void QuaduinoFlight::moveBackward(unsigned long *currentFrame, unsigned long sta
   }
 }
 
-void QuaduinoFlight::turnToHeading(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endFrame, uint16_t targetHeading) {
+void QuaduinoFlight::turnToHeading(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint16_t targetHeading) {
   unsigned long startFrame = startSeconds*74;
   unsigned long endFrame = startFrame + timePeriod*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
@@ -313,7 +313,7 @@ void QuaduinoFlight::turnToHeading(unsigned long *currentFrame, unsigned long st
   }
 }
 
-void QuaduinoFlight::killMotors(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endFrame) {
+void QuaduinoFlight::killMotors(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod) {
   unsigned long startFrame = startSeconds*74;
   unsigned long endFrame = startFrame + timePeriod*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
