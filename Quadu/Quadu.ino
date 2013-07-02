@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * myQuad - Intel Ultimate Engineering Experience
+ * Quaduino - Intel Ultimate Engineering Experience
  * Firmware revision: 20130522-2320
  *
  * BASIC "+" QUADCOPTER DESIGN
@@ -114,7 +114,7 @@ void setupPins() {
 
 unsigned long frameCount;
 uint32_t lastMic;
-uint16_t benchMic = 1300;
+uint16_t benchMic = 13000;
 
 void loop() {
 #ifdef DEBUG_MotorSketch
@@ -163,11 +163,20 @@ void loop() {
 
   //if(flightController.areMotorsActive() && sensorPackage.getBatteryPercent()>= 60) {
     // Flight Commands
-    flightController.hover(&frameCount, 0, 75*3);
-    flightController.increaseAltitude(&frameCount, 75*3, 75*9, 30);
-    flightController.hover(&frameCount, 75*9, 75*10);
-    flightController.moveLeft(&frameCount, 75*10, 75*15, 25);
-    flightController.killMotors(&frameCount, 75*15, 75*18);
+    flightController.hover(&frameCount, 0, 3);
+    
+    flightController.increaseAltitude(&frameCount, 3, 9, 30);
+    
+    flightController.hover(&frameCount, 9, 10);
+    
+    flightController.moveLeft(&frameCount, 10, 15, 25);
+    flightController.moveForward(&frameCount, 15, 20, 25);
+    flightController.moveRight(&frameCount, 20, 25, 25);
+    flightController.moveBackward(&frameCount, 25, 30, 25);
+    
+    flightController.hover(&frameCount, 30, 40);
+    
+    flightController.killMotors(&frameCount, 18, 20);
     
     /*
     void QuaduinoFlight::increaseAltitude(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame, uint8_t throttle) 

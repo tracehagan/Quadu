@@ -10,13 +10,13 @@ QuaduinoSensors::QuaduinoSensors() {
 
 void QuaduinoSensors::init() {
   MPU = MPU9150Lib();
-
+  Serial.print("... ");
   magHeading = 0.0;
   areSensorsReady = false;
 
   if(MPU.init(MPU_UPDATE_RATE, MPU_MAG_MIX_GYRO_AND_MAG)) {
     areSensorsReady = true;
-    Serial.println("... sensors complete.");
+    Serial.println("sensors complete.");
   }
 }
 

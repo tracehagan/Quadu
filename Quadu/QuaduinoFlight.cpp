@@ -54,7 +54,7 @@ void QuaduinoFlight::setupPidControl() {
   
   // Brushed Micro-motor (yr. 2013)
   //   effective range:[1, 255] - all of PWM range
-  //   hover speed is ~55 with Quaduino
+  //   hover speed is ~70 with Quaduino
   //   Expect PID range to be +/- 255, to account for it being at full speed and needing a drastic change
   
   Serial.print("... ");
@@ -244,6 +244,15 @@ void QuaduinoFlight::increaseAltitude(unsigned long *currentFrame, unsigned long
   unsigned long endFrame = startFrame + timePeriod*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame) {
     altitudeSetpoint = throttle;
+    Serial.println("increasing alt.");
+  }
+}
+
+void QuaduinoFlight::decreaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t invThrottle) {
+  unsigned long startFrame = startSeconds*74;
+  unsigned long endFrame = startFrame + timePeriod*74;
+  if(*currentFrame >= startFrame && *currentFrame < endFrame) {
+    altitudeSetpoint = -invThrottle;
     Serial.println("increasing alt.");
   }
 }

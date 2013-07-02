@@ -66,8 +66,7 @@ private:
   // conservative tunings for PID control
   double consKp; // =  0.3;
   double consKi; // =  0.003;
-  double consKd; // =  0.192;
-
+  double consKd; // =  0.192
   // aggressive tunings for PID control
   double aggKp; // =  0.93;
   double aggKi; // =  0.1;
@@ -87,7 +86,6 @@ private:
   PID yawPID;//(&yawInput, &yawOutput, &yawSetpoint, 4.0, 0.0, 0.0, DIRECT);
   PID pitchPID;//(&pitchInput, &pitchOutput, &pitchSetpoint, consKp, consKi, consKd, DIRECT);  // 0.375, 0.0, 0.005
   PID rollPID;//(&rollInput, &rollOutput, &rollSetpoint, consKp, consKi, consKd, DIRECT);
-
 public:
   QuaduinoFlight();
 
@@ -121,14 +119,15 @@ public:
   // =============================================================
   // AUTONOMOUS FLIGHT CONTROLLERS
   // =============================================================
-  void increaseAltitude(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame, uint8_t throttle);
-  void hover(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame);
-  void moveLeft(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame, uint8_t travelSpeed);
-  void moveRight(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame, uint8_t travelSpeed);
-  void moveForward(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame, uint8_t travelSpeed);
-  void moveBackward(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame, uint8_t travelSpeed);
-  void turnToHeading(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame, uint16_t targetHeading);
-  void killMotors(unsigned long *currentFrame, unsigned long startFrame, unsigned long endFrame);
+  void increaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t throttle);
+  void decreaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t invThrottle);
+  void hover(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod);
+  void moveLeft(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
+  void moveRight(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
+  void moveForward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
+  void moveBackward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
+  void turnToHeading(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint16_t targetHeading);
+  void killMotors(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod);
   
   // Setters
   void setRecvPitch(uint16_t recvPitch);
