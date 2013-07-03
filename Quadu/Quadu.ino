@@ -119,10 +119,8 @@ uint16_t benchMic = 13000;
 void loop() {
 #ifdef DEBUG_MotorSketch
   //Motor Sketch:
-  analogWrite(FRONT_MOTOR, 0);
-  analogWrite(RIGHT_MOTOR, 0);
-  analogWrite(REAR_MOTOR, 0);
-  analogWrite(LEFT_MOTOR, 0);
+  flightController.runMotorsFullRange();
+
 #elif defined DEBUG_DataSketch
   //Data Sketch:
   sensorPackage.updateMPU();
@@ -147,7 +145,7 @@ void loop() {
 
   commDevice.parseSerialInput(1);
 
-#elif defined DEBUG_FullFunctionSketch
+#elif defined DEBUG_FullFunctionSketchM
   // Full-function sketch:
   // read and parse any available serial data
   //commDevice.parseSerialInput(1);
@@ -157,43 +155,34 @@ void loop() {
   sensorPackage.updateBattery();
   /*
   if (frameCount % 3 == 0) {
-    commDevice.serialSendQuadStatus(sensorPackage, flightController, 1);
-  }
-  */
+   commDevice.serialSendQuadStatus(sensorPackage, flightController, 1);
+   }
+   */
   
-
+  Serial.print(sensorPackage.getRoll());
+  Serial.print("\t");
+  Serial.print(sensorPackage.getPitch());
+  Serial.print("\t");
+  Serial.println(sensorPackage.getBatteryPercent());
   if(flightController.areMotorsActive() && sensorPackage.getBatteryPercent()>= 60) {
     // Flight Commands
-    flightController.hover(&frameCount, 0, 3);
-    
-    //flightController.increaseAltitude(&frameCount, 3, 9, 30);
-    
-    flightController.hover(&frameCount, 9, 10);
-    
-    flightController.moveLeft(&frameCount, 10, 15, 25);
-    flightController.moveForward(&frameCount, 15, 20, 25);
-    flightController.moveRight(&frameCount, 20, 25, 25);
-    flightController.moveBackward(&frameCount, 25, 30, 25);
-    
-    flightController.hover(&frameCount, 30, 40);
-    //flightController.killMotors(&frameCount, 0, 20);
-    
-    //It's this one.
-    
+    //flightController.startAutonomy();
     // Adjust all PIDs before applying to motors
     if(flightController.adjustRoll(sensorPackage.getRoll()) && flightController.adjustPitch(sensorPackage.getPitch())) {
+
     }
   }
-  
+
   // Every 13500 microseconds, increment our frame counter.
   // 74.074074074.. frames per second
   if(micros() - lastMic > benchMic) {
     lastMic = micros();
     frameCount++;
   }
-#endif 
+#endif
 
 
-  
+
 }
+
 

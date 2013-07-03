@@ -13,6 +13,11 @@ private:
   int rearMotorValue;
   int leftMotorValue;
 
+  int frontMotorSteering;
+  int rightMotorSteering;
+  int rearMotorSteering;
+  int leftMotorSteering;
+  
   // minimum and maximum effective pulse widths
   // (continuous-rotation motors use PWM signals to control their speed)
   int minPulseWidth; // minimum pulse width
@@ -20,9 +25,11 @@ private:
 
   // controls whether motors are enabled or not (useful to shut off quickly)
   boolean motorsActive; // = false;
+  boolean allowAutonomy;
   
   // best initial guess at what "hover" motor speed should be,
   float gravityHover;
+
 
   // fine-tuning motor offset values to accomodate fixed imbalances
   // or differences in each motor, which there will be some
@@ -64,18 +71,6 @@ private:
   double altitugeOutput;     // will control all motors to change/keep elevation
   // NOTE: ALTITUDE CONTROL IS NOT CURRENTLY IMPLEMENTED
 
-  // conservative tunings for PID control
-  double consKp; // =  0.3;
-  double consKi; // =  0.003;
-  double consKd; // =  0.192
-  // aggressive tunings for PID control
-  double aggKp; // =  0.93;
-  double aggKi; // =  0.1;
-  double aggKd; // =  0.2;
-
-  // angle to swap from conservative tunings to aggressive tunings
-  int angleToSwap; // = 15;
-
   // adjustments sent by the control center for throttle/steering/etc.
   int16_t rcvYaw;
   int16_t rcvPitch;
@@ -84,9 +79,9 @@ private:
   uint8_t rcvActive;
 
   // Specify the links and initial tuning parameters
-  PID yawPID;//(&yawInput, &yawOutput, &yawSetpoint, 4.0, 0.0, 0.0, DIRECT);
-  PID pitchPID;//(&pitchInput, &pitchOutput, &pitchSetpoint, consKp, consKi, consKd, DIRECT);  // 0.375, 0.0, 0.005
-  PID rollPID;//(&rollInput, &rollOutput, &rollSetpoint, consKp, consKi, consKd, DIRECT);
+  PID yawPID;
+  PID pitchPID;
+  PID rollPID;
 public:
   QuaduinoFlight();
 
@@ -105,9 +100,8 @@ public:
   // =============================================================
   void runMotorsMax();
   void runMotorsMin();
-  void runMotorsFullrange();
+  void runMotorsFullRange();
   void runMotorsAt(int value);
-  void runMotorsFullrangeGradual();
   void runMotorsWithPID();
   
   // =============================================================
@@ -120,6 +114,7 @@ public:
   // =============================================================
   // AUTONOMOUS FLIGHT CONTROLLERS
   // =============================================================
+  void startAutonomy();
   void increaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t throttle);
   void decreaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t invThrottle);
   void hover(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod);
@@ -128,7 +123,7 @@ public:
   void moveForward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
   void moveBackward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
   void turnToHeading(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint16_t targetHeading);
-  void killMotors(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod);
+  void killMotors(unsigned long *currentFrame, unsigned long startSeconds);
   
   // Setters
   void setRecvPitch(uint16_t recvPitch);
