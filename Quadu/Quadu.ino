@@ -163,13 +163,14 @@ void loop() {
   if(sensorPackage.getBatteryPercent() >= 60) {
     // Flight Commands
     
+    /*
     flightController.startAutonomy();
     flightController.hover(&frameCount, 0, 3);
-    flightController.increaseAltitude(&frameCount, 3, 3, 30);
+    flightController.increaseAltitude(&frameCount, 3, 3, 15);
     flightController.hover(&frameCount, 6, 3);
     flightController.decreaseAltitude(&frameCount, 9, 3, 15);
     flightController.killMotors(&frameCount, 12);
-    
+    */
     // Adjust all PIDs before applying to motors
     flightController.adjustRoll(sensorPackage.getRoll());
     flightController.adjustPitch(sensorPackage.getPitch());

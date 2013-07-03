@@ -16,10 +16,10 @@ void QuaduinoFlight::init() {
 
   minPulseWidth = 0;
   maxPulseWidth = 255;
-  gravityHover = 70; //proportional to voltage of battery... :(
+  gravityHover = 80; //proportional to voltage of battery... :(
   
   frontMotorOffset = 0;
-  rearMotorOffset = 0;
+  rearMotorOffset = 5;
   rightMotorOffset = 0;
   leftMotorOffset = 0;
 
