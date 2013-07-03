@@ -145,7 +145,7 @@ void loop() {
 
   commDevice.parseSerialInput(1);
 
-#elif defined DEBUG_FullFunctionSketchM
+#elif defined DEBUG_FullFunctionSketch
   // Full-function sketch:
   // read and parse any available serial data
   //commDevice.parseSerialInput(1);
@@ -158,19 +158,21 @@ void loop() {
    commDevice.serialSendQuadStatus(sensorPackage, flightController, 1);
    }
    */
-  
-  Serial.print(sensorPackage.getRoll());
-  Serial.print("\t");
-  Serial.print(sensorPackage.getPitch());
-  Serial.print("\t");
-  Serial.println(sensorPackage.getBatteryPercent());
-  if(flightController.areMotorsActive() && sensorPackage.getBatteryPercent()>= 60) {
+   
+   //Serial.println(sensorPackage.getRoll());
+  if(sensorPackage.getBatteryPercent() >= 60) {
     // Flight Commands
-    //flightController.startAutonomy();
+    
+    flightController.startAutonomy();
+    flightController.hover(&frameCount, 0, 3);
+    flightController.increaseAltitude(&frameCount, 3, 3, 30);
+    flightController.hover(&frameCount, 6, 3);
+    flightController.decreaseAltitude(&frameCount, 9, 3, 15);
+    flightController.killMotors(&frameCount, 12);
+    
     // Adjust all PIDs before applying to motors
-    if(flightController.adjustRoll(sensorPackage.getRoll()) && flightController.adjustPitch(sensorPackage.getPitch())) {
-
-    }
+    flightController.adjustRoll(sensorPackage.getRoll());
+    flightController.adjustPitch(sensorPackage.getPitch());
   }
 
   // Every 13500 microseconds, increment our frame counter.

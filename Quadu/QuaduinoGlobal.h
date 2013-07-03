@@ -12,10 +12,10 @@
 #define BAT_CHG		32
 #define PGOOD           53
 
-#define FRONT_MOTOR	11	// Motor 4 output
-#define RIGHT_MOTOR	12	// Motor 3 output
-#define REAR_MOTOR	8	// Motor 2 output
-#define LEFT_MOTOR	10	// Motor 1 output
+#define FRONT_MOTOR	10	// Motor 1 output
+#define RIGHT_MOTOR     8	// Motor 2 output
+#define REAR_MOTOR	12	// Motor 3 output
+#define LEFT_MOTOR	11	// Motor 4 output
 
 #define ALT_INT		19
 

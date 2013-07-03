@@ -84,8 +84,8 @@ void QuaduinoFlight::setupPidControl() {
   yawTuningActive = true;
 
   yawSetpoint = 0.0; // no rotation
-  rollSetpoint = 182; // level
-  pitchSetpoint = 90; // level
+  rollSetpoint = 90; // level
+  pitchSetpoint = 181; // level
   altitudeSetpoint = 0.0; // no change
   
   Serial.println("PIDs complete");
@@ -98,9 +98,9 @@ void QuaduinoFlight::setupPidControl() {
 void QuaduinoFlight::runMotorsMax() {
   // set all motors to maximum pulse width (highest speed)
   analogWrite(FRONT_MOTOR, maxPulseWidth);
-  analogWrite(RIGHT_MOTOR, maxPulseWidth);
-  analogWrite(REAR_MOTOR, maxPulseWidth);
-  analogWrite(LEFT_MOTOR, maxPulseWidth);
+  //analogWrite(RIGHT_MOTOR, maxPulseWidth);
+  //analogWrite(REAR_MOTOR, maxPulseWidth);
+  //analogWrite(LEFT_MOTOR, maxPulseWidth);
 }
 
 
@@ -146,21 +146,29 @@ void QuaduinoFlight::runMotorsFullRange() {
 // =============================================================
 
 boolean QuaduinoFlight::adjustPitch(double pitchIn) { //Aiming for ~0.5
-  if(pitchIn < 360/2) {
-    pitchInput = map(pitchIn, 0, 180, 180,0);
-  } else if(pitchIn >= 360/2) {
-    pitchInput = map(pitchIn, 180, 360, 360, 180);
-  }
+  /*
+  Serial.print("P: ");
+  Serial.print(pitchInput);
+  Serial.print(" \t");
+  */
   
-  //Serial.print(pitchInput);
+  if(pitchIn < 360/2) {
+    pitchInput = map(pitchIn, 0, 180, 180, 0);
+  } else if(pitchIn > 360/2) {
+    pitchInput = map(pitchIn, 360, 180, 180, 360);
+  }
   
   if (pitchTuningActive && motorsActive) {
     // run PID computation
     if(pitchPID.Compute()) {
-      
       rearMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + rearMotorOffset + yawAdjustFR + pitchOutput + rearMotorSteering;
       frontMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + frontMotorOffset + yawAdjustFR - pitchOutput + frontMotorSteering;
   
+      Serial.print(rearMotorValue);
+      Serial.print("\t");
+      Serial.print(frontMotorValue);
+      Serial.print("\t");
+      
       analogWrite(REAR_MOTOR, rearMotorValue);
       analogWrite(FRONT_MOTOR, frontMotorValue);
       
@@ -170,19 +178,30 @@ boolean QuaduinoFlight::adjustPitch(double pitchIn) { //Aiming for ~0.5
   return false;
 }
 
-
 // =============================================================
 // ADJUST ROLL USING PID/STEERING
 // =============================================================
 
 boolean QuaduinoFlight::adjustRoll(double rollIn) { //looking for 90
+  /*
+  Serial.print("R: ");
+  Serial.print(rollIn);
+  Serial.print("\t");
+  */
+  rollInput = rollIn;
   if (rollTuningActive && motorsActive) {
     // run PID computation
     if(rollPID.Compute()) {
-      
       leftMotorValue = minPulseWidth + gravityHover + altitudeSetpoint - rollOutput + leftMotorOffset + yawAdjustLR + leftMotorSteering;
       rightMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + rollOutput + rightMotorOffset + yawAdjustLR + rightMotorSteering;
 
+      Serial.print(rollIn);
+      Serial.print("\t");
+      Serial.print(rollInput);
+      Serial.print("\t");
+      Serial.print(rollOutput);
+      Serial.println("\t");
+      
       analogWrite(LEFT_MOTOR, leftMotorValue);
       analogWrite(RIGHT_MOTOR, rightMotorValue);
       
@@ -300,10 +319,12 @@ void QuaduinoFlight::turnToHeading(unsigned long *currentFrame, unsigned long st
 
 void QuaduinoFlight::killMotors(unsigned long *currentFrame, unsigned long startSeconds) {
   unsigned long startFrame = startSeconds*74;
-  runMotorsMin();
-  allowAutonomy = false;
-  motorsActive = false;
-  Serial.println("Killing motors. I hope you're on the ground.");
+  if(*currentFrame >= startFrame && allowAutonomy) {
+    runMotorsMin();
+    allowAutonomy = false;
+    motorsActive = false;
+    Serial.println("Killing motors. I hope you're on the ground.");
+  }
 }
 
 

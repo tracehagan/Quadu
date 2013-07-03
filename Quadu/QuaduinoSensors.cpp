@@ -113,7 +113,7 @@ bool QuaduinoSensors::updateBattery() {
   // battery is connected to Arduino analog pin 0 through a voltage divider
   // fully charged should be about 705, charge required about 400
   uint16_t batteryRaw = analogRead(VBAT);
-  battery = batteryRaw * 4.1/737.0;
+  battery = batteryRaw * 4.1/265.0;
 }
 
 float QuaduinoSensors::getAltitude() {
