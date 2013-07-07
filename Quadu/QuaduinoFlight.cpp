@@ -16,10 +16,10 @@ void QuaduinoFlight::init() {
 
   minPulseWidth = 0;
   maxPulseWidth = 255;
-  gravityHover = 80; //proportional to voltage of battery... :(
+  gravityHover = 70; //proportional to voltage of battery... :(
   
   frontMotorOffset = 0;
-  rearMotorOffset = 5;
+  rearMotorOffset = 0;
   rightMotorOffset = 0;
   leftMotorOffset = 0;
 
@@ -98,9 +98,9 @@ void QuaduinoFlight::setupPidControl() {
 void QuaduinoFlight::runMotorsMax() {
   // set all motors to maximum pulse width (highest speed)
   analogWrite(FRONT_MOTOR, maxPulseWidth);
-  //analogWrite(RIGHT_MOTOR, maxPulseWidth);
-  //analogWrite(REAR_MOTOR, maxPulseWidth);
-  //analogWrite(LEFT_MOTOR, maxPulseWidth);
+  analogWrite(RIGHT_MOTOR, maxPulseWidth);
+  analogWrite(REAR_MOTOR, maxPulseWidth);
+  analogWrite(LEFT_MOTOR, maxPulseWidth);
 }
 
 
@@ -146,28 +146,19 @@ void QuaduinoFlight::runMotorsFullRange() {
 // =============================================================
 
 boolean QuaduinoFlight::adjustPitch(double pitchIn) { //Aiming for ~0.5
-  /*
-  Serial.print("P: ");
-  Serial.print(pitchInput);
-  Serial.print(" \t");
-  */
-  
   if(pitchIn < 360/2) {
     pitchInput = map(pitchIn, 0, 180, 180, 0);
   } else if(pitchIn > 360/2) {
     pitchInput = map(pitchIn, 360, 180, 180, 360);
   }
   
+  //Serial.println(pitchInput);
+  
   if (pitchTuningActive && motorsActive) {
     // run PID computation
     if(pitchPID.Compute()) {
       rearMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + rearMotorOffset + yawAdjustFR + pitchOutput + rearMotorSteering;
       frontMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + frontMotorOffset + yawAdjustFR - pitchOutput + frontMotorSteering;
-  
-      Serial.print(rearMotorValue);
-      Serial.print("\t");
-      Serial.print(frontMotorValue);
-      Serial.print("\t");
       
       analogWrite(REAR_MOTOR, rearMotorValue);
       analogWrite(FRONT_MOTOR, frontMotorValue);
@@ -183,24 +174,15 @@ boolean QuaduinoFlight::adjustPitch(double pitchIn) { //Aiming for ~0.5
 // =============================================================
 
 boolean QuaduinoFlight::adjustRoll(double rollIn) { //looking for 90
-  /*
-  Serial.print("R: ");
-  Serial.print(rollIn);
-  Serial.print("\t");
-  */
   rollInput = rollIn;
+  
+  //Serial.println(rollInput);
+  
   if (rollTuningActive && motorsActive) {
     // run PID computation
     if(rollPID.Compute()) {
-      leftMotorValue = minPulseWidth + gravityHover + altitudeSetpoint - rollOutput + leftMotorOffset + yawAdjustLR + leftMotorSteering;
-      rightMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + rollOutput + rightMotorOffset + yawAdjustLR + rightMotorSteering;
-
-      Serial.print(rollIn);
-      Serial.print("\t");
-      Serial.print(rollInput);
-      Serial.print("\t");
-      Serial.print(rollOutput);
-      Serial.println("\t");
+      leftMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + rollOutput + leftMotorOffset + yawAdjustLR + leftMotorSteering;
+      rightMotorValue = minPulseWidth + gravityHover + altitudeSetpoint - rollOutput + rightMotorOffset + yawAdjustLR + rightMotorSteering;
       
       analogWrite(LEFT_MOTOR, leftMotorValue);
       analogWrite(RIGHT_MOTOR, rightMotorValue);
@@ -225,9 +207,9 @@ void QuaduinoFlight::startAutonomy() {
   motorsActive = true;
 }
 
-void QuaduinoFlight::increaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t throttle) {
+void QuaduinoFlight::increaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t throttle) {
   unsigned long startFrame = startSeconds*74;
-  unsigned long endFrame = startFrame + timePeriod*74;
+  unsigned long endFrame = endSeconds*74;
   
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
     altitudeSetpoint = throttle;
@@ -235,9 +217,9 @@ void QuaduinoFlight::increaseAltitude(unsigned long *currentFrame, unsigned long
   }
 }
 
-void QuaduinoFlight::decreaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t invThrottle) {
+void QuaduinoFlight::decreaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t invThrottle) {
   unsigned long startFrame = startSeconds*74;
-  unsigned long endFrame = startFrame + timePeriod*74;
+  unsigned long endFrame = endSeconds*74;
   
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
     altitudeSetpoint = -invThrottle;
@@ -245,9 +227,9 @@ void QuaduinoFlight::decreaseAltitude(unsigned long *currentFrame, unsigned long
   }
 }
 
-void QuaduinoFlight::hover(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod) {
+void QuaduinoFlight::hover(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds) {
   unsigned long startFrame = startSeconds*74;
-  unsigned long endFrame = startFrame + timePeriod*74;
+  unsigned long endFrame = endSeconds*74;
   
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
     altitudeSetpoint = 0.0;
@@ -255,9 +237,9 @@ void QuaduinoFlight::hover(unsigned long *currentFrame, unsigned long startSecon
   }
 }
 
-void QuaduinoFlight::moveLeft(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed) {
+void QuaduinoFlight::moveLeft(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t travelSpeed) {
   unsigned long startFrame = startSeconds*74;
-  unsigned long endFrame = startFrame + timePeriod*74;
+  unsigned long endFrame = endSeconds*74;
   
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
     leftMotorSteering = -travelSpeed;
@@ -269,9 +251,9 @@ void QuaduinoFlight::moveLeft(unsigned long *currentFrame, unsigned long startSe
   }
 }
 
-void QuaduinoFlight::moveRight(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed) {
+void QuaduinoFlight::moveRight(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t travelSpeed) {
   unsigned long startFrame = startSeconds*74;
-  unsigned long endFrame = startFrame + timePeriod*74;
+  unsigned long endFrame = endSeconds*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
     leftMotorSteering = travelSpeed;
     rightMotorSteering = -travelSpeed;
@@ -282,9 +264,9 @@ void QuaduinoFlight::moveRight(unsigned long *currentFrame, unsigned long startS
   }
 }
 
-void QuaduinoFlight::moveForward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed) {
+void QuaduinoFlight::moveForward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t travelSpeed) {
   unsigned long startFrame = startSeconds*74;
-  unsigned long endFrame = startFrame + timePeriod*74;
+  unsigned long endFrame = endSeconds*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
     rearMotorSteering = travelSpeed;
     frontMotorSteering = -travelSpeed;
@@ -295,9 +277,9 @@ void QuaduinoFlight::moveForward(unsigned long *currentFrame, unsigned long star
   }
 }
 
-void QuaduinoFlight::moveBackward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed) {
+void QuaduinoFlight::moveBackward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t travelSpeed) {
   unsigned long startFrame = startSeconds*74;
-  unsigned long endFrame = startFrame + timePeriod*74;
+  unsigned long endFrame = endSeconds*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
     rearMotorSteering = -travelSpeed;
     frontMotorSteering = travelSpeed;
@@ -308,9 +290,9 @@ void QuaduinoFlight::moveBackward(unsigned long *currentFrame, unsigned long sta
   }
 }
 
-void QuaduinoFlight::turnToHeading(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint16_t targetHeading) {
+void QuaduinoFlight::turnToHeading(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint16_t targetHeading) {
   unsigned long startFrame = startSeconds*74;
-  unsigned long endFrame = startFrame + timePeriod*74;
+  unsigned long endFrame = endSeconds*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
     Serial.print("turning to heading: ");
     Serial.println(targetHeading);

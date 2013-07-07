@@ -162,18 +162,18 @@ void loop() {
    //Serial.println(sensorPackage.getRoll());
   if(sensorPackage.getBatteryPercent() >= 60) {
     // Flight Commands
+    //flightController.startAutonomy();
+    //flightController.hover(&frameCount, 0, 3);
+    //flightController.increaseAltitude(&frameCount, 3, 4, 30);
+    //flightController.hover(&frameCount, 4, 7);
+    //flightController.decreaseAltitude(&frameCount, 7,10, 5);
+    //flightController.killMotors(&frameCount, 10);
     
-    /*
-    flightController.startAutonomy();
-    flightController.hover(&frameCount, 0, 3);
-    flightController.increaseAltitude(&frameCount, 3, 3, 15);
-    flightController.hover(&frameCount, 6, 3);
-    flightController.decreaseAltitude(&frameCount, 9, 3, 15);
-    flightController.killMotors(&frameCount, 12);
-    */
     // Adjust all PIDs before applying to motors
     flightController.adjustRoll(sensorPackage.getRoll());
     flightController.adjustPitch(sensorPackage.getPitch());
+  } else {
+    flightController.killMotors(&frameCount, 0);
   }
 
   // Every 13500 microseconds, increment our frame counter.

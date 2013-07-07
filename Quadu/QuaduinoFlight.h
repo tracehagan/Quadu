@@ -115,14 +115,14 @@ public:
   // AUTONOMOUS FLIGHT CONTROLLERS
   // =============================================================
   void startAutonomy();
-  void increaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t throttle);
-  void decreaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t invThrottle);
-  void hover(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod);
-  void moveLeft(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
-  void moveRight(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
-  void moveForward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
-  void moveBackward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint8_t travelSpeed);
-  void turnToHeading(unsigned long *currentFrame, unsigned long startSeconds, unsigned long timePeriod, uint16_t targetHeading);
+  void increaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t throttle);
+  void decreaseAltitude(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t invThrottle);
+  void hover(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds);
+  void moveLeft(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t travelSpeed);
+  void moveRight(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t travelSpeed);
+  void moveForward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t travelSpeed);
+  void moveBackward(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint8_t travelSpeed);
+  void turnToHeading(unsigned long *currentFrame, unsigned long startSeconds, unsigned long endSeconds, uint16_t targetHeading);
   void killMotors(unsigned long *currentFrame, unsigned long startSeconds);
   
   // Setters
