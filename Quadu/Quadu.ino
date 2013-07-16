@@ -49,6 +49,8 @@
 // motor control library files
 #include "PID_v1.h"
 
+//UNCOMMNENT AND COMMENT TO DO DEBUGGING 
+
 //#define DEBUG_MotorSketch
 //#define DEBUG_DataSketch
 //#define DEBUG_RadioDataSketch

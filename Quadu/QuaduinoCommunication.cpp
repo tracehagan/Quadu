@@ -156,10 +156,10 @@ void QuaduinoCommunication::serialSendQuadStatus(QuaduinoSensors &thisSensorPack
   dataOut[1] = map(thisSensorPackage.getPitch(), 0, 360, 0, 255); //max 360, min 0
   dataOut[2] = thisSensorPackage.getRoll(); //max 180 min 0
   dataOut[3] = map(thisSensorPackage.getYaw(), 0, 360, 0, 255); //max 360, min 0
-  dataOut[4] = map(thisFlightController.getFrontMotorValue(), 1100, 1600, 0, 255); //max 1600, min 1100
-  dataOut[5] = map(thisFlightController.getRightMotorValue(), 1100, 1600, 0, 255);
-  dataOut[6] = map(thisFlightController.getRearMotorValue(), 1100, 1600, 0, 255);
-  dataOut[7] = map(thisFlightController.getLeftMotorValue(), 1100, 1600, 0, 255);
+  dataOut[4] = map(thisFlightController.getFrontMotorValue(), 0, 255, 0, 255); //max 1600, min 1100
+  dataOut[5] = map(thisFlightController.getRightMotorValue(), 0, 255, 0, 255);
+  dataOut[6] = map(thisFlightController.getRearMotorValue(), 0, 255, 0, 255);
+  dataOut[7] = map(thisFlightController.getLeftMotorValue(), 0, 255, 0, 255);
   dataOut[8] = map(thisSensorPackage.getMagneticHeading(), 0, 360, 0, 255);
   dataOut[9] = thisSensorPackage.getBatteryPercent(); //percentage, 0% corresponds to 0V on battery, 100% corresponds to 4.2V 
   dataOut[10] = 0; //first byte of altitude
