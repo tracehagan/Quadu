@@ -54,7 +54,7 @@ void QuaduinoFlight::setupPidControl() {
   // Brushed Micro-motor (yr. 2013)
   //   effective range:[1, 255] - all of PWM range
   //   hover speed is ~70 with Quaduino
-  //   Expect PID range to be +/- 255, to account for it being at full speed and needing a drastic change
+  //   Expect PID range to be +/- 55, to account for it being at full speed and needing a drastic change
   
   Serial.print("... ");
   
