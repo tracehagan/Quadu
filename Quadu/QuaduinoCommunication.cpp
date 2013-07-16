@@ -100,7 +100,7 @@ void QuaduinoCommunication::parseSerialInput(uint8_t whichSerial) {
         //Serial.println(roll_tuning_active ? 1 : 0);
         break;
       case 'y':
-        flightController.incTuningParam('y', 0.01);
+        flightController.incTuningParam('y', 0.1);
         break;
       case 'u':
         flightController.incTuningParam('u', 0.01);
@@ -109,7 +109,7 @@ void QuaduinoCommunication::parseSerialInput(uint8_t whichSerial) {
         flightController.incTuningParam('i', 0.001);
         break;
       case 'h':
-        flightController.incTuningParam('h', -0.01);
+        flightController.incTuningParam('h', -0.1);
         break;
       case 'j':
         flightController.incTuningParam('j', -0.01);
@@ -118,7 +118,7 @@ void QuaduinoCommunication::parseSerialInput(uint8_t whichSerial) {
         flightController.incTuningParam('k', -0.001);
         break;
       case 'o':
-        flightController.incTuningParam('o', 0.01);
+        flightController.incTuningParam('o', 0.1);
         break;
       case 'p':
         flightController.incTuningParam('p', 0.01);
@@ -127,7 +127,7 @@ void QuaduinoCommunication::parseSerialInput(uint8_t whichSerial) {
         flightController.incTuningParam('[', 0.001);
         break;
       case 'l':
-        flightController.incTuningParam('l', -0.01);
+        flightController.incTuningParam('l', -0.1);
         break;
       case ';':
         flightController.incTuningParam(';', -0.01);
