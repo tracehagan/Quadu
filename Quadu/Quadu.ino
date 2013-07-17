@@ -161,23 +161,30 @@ void loop() {
    }
    */
    
-   //Serial.println(sensorPackage.getRoll());
-  if(sensorPackage.getBatteryPercent() >= 60) {
+   //Serial.println(sensorPackage.getYaw());
+  
+   //Serial.println(sensorPackage.getYaw());
+   flightController.adjustYaw(sensorPackage.getYaw()); 
+  
+  /* //Serial.println(sensorPackage.getRoll());
+  if(sensorPackage.getBatteryPercent() >= 70) {
     // Flight Commands
     flightController.startAutonomy();
-    flightController.hover(&frameCount, 0, 3);
-    flightController.increaseAltitude(&frameCount, 3, 4, 30);
-    flightController.hover(&frameCount, 4, 7);
-    flightController.decreaseAltitude(&frameCount, 7,10, 5);
-    flightController.killMotors(&frameCount, 10);
+    flightController.hover(&frameCount, 0, 5);
+    //flightController.hover(&frameCount, 4, 7);
+    flightController.decreaseAltitude(&frameCount, 5, 20, 20);
+    flightController.killMotors(&frameCount, 20);
     
     // Adjust all PIDs before applying to motors
     flightController.adjustRoll(sensorPackage.getRoll());
     flightController.adjustPitch(sensorPackage.getPitch());
+    flightController.adjustYaw(sensorPackage.getYaw());
+  } else if(sensorPackage.getBatteryPercent()>= 60 && sensorPackage.getBatteryPercent() < 70) {
+    flightController.decreaseAltitude(&frameCount, 0, 100, 20);
   } else {
     flightController.killMotors(&frameCount, 0);
   }
-
+*/
   // Every 13500 microseconds, increment our frame counter.
   // 74.074074074.. frames per second
   if(micros() - lastMic > benchMic) {

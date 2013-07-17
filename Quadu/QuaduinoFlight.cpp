@@ -16,12 +16,12 @@ void QuaduinoFlight::init() {
 
   minPulseWidth = 0;
   maxPulseWidth = 255;
-  gravityHover = 70; //proportional to voltage of battery... :(
+  gravityHover = 110; //proportional to voltage of battery... :( //   70
   
-  frontMotorOffset = 0;
-  rearMotorOffset = 0;
-  rightMotorOffset = 0;
-  leftMotorOffset = 0;
+  frontMotorOffset = -3;
+  rearMotorOffset = 3;
+  rightMotorOffset = 2;
+  leftMotorOffset = -2;
 
   frontMotorSteering = 0;
   rearMotorSteering = 0;
@@ -83,9 +83,9 @@ void QuaduinoFlight::setupPidControl() {
   yawPID.SetMode(AUTOMATIC);
   yawTuningActive = true;
 
-  yawSetpoint = 0.0; // no rotation
-  rollSetpoint = 90; // level
-  pitchSetpoint = 180; // level
+  yawSetpoint = 100.0; // no rotation
+  rollSetpoint = 91; // level
+  pitchSetpoint = 181; // level
   altitudeSetpoint = 0.0; // no change
   
   Serial.println("PIDs complete");
@@ -194,12 +194,34 @@ boolean QuaduinoFlight::adjustRoll(double rollIn) { //looking for 90
 }
 
 boolean QuaduinoFlight::adjustYaw(double yawIn) { //looking to hold a heading.. let's try 0 degrees
-  if (yawTuningActive && motorsActive) {
-    // use orientation's "yaw" angle in degrees (passed as argument)
-    yawInput = sensorPackage.getYaw();
-    //yawSetpoint = 0; //we really don't have a set heading. Need to create an average based on where we're pointing.
-    yawPID.Compute();
-  }
+ // if (yawTuningActive && motorsActive) {
+   yawInput = yawIn;
+    if (yawPID.Compute()){
+       // use orientation's "yaw" angle in degrees (passed as argument)
+       //yawOutput is the PID output
+       
+       //adjust yawAdjustFR and yawAdjustLR
+    //counterclockwise increases YAW number, clockwise decreases
+   // FR spins CW, imparts CCW spin
+      yawAdjustLR = -yawOutput;
+      yawAdjustFR = yawOutput;
+     Serial.println(yawOutput);
+     /* leftMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + rollOutput + leftMotorOffset + yawAdjustLR + leftMotorSteering;
+      rightMotorValue = minPulseWidth + gravityHover + altitudeSetpoint - rollOutput + rightMotorOffset + yawAdjustLR + rightMotorSteering;
+      rearMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + rearMotorOffset + yawAdjustFR + pitchOutput + rearMotorSteering;
+      frontMotorValue = minPulseWidth + gravityHover + altitudeSetpoint + frontMotorOffset + yawAdjustFR - pitchOutput + frontMotorSteering;
+      
+      analogWrite(REAR_MOTOR, rearMotorValue);
+      analogWrite(FRONT_MOTOR, frontMotorValue);
+      analogWrite(LEFT_MOTOR, leftMotorValue);
+      analogWrite(RIGHT_MOTOR, rightMotorValue);*/
+       
+      //yawSetpoint = 0; //we really don't have a set heading. Need to create an average based on where we're pointing.
+      return true;
+    }
+   
+ // }
+  return false;
 }
 
 void QuaduinoFlight::startAutonomy() {
@@ -294,8 +316,14 @@ void QuaduinoFlight::turnToHeading(unsigned long *currentFrame, unsigned long st
   unsigned long startFrame = startSeconds*74;
   unsigned long endFrame = endSeconds*74;
   if(*currentFrame >= startFrame && *currentFrame < endFrame && allowAutonomy) {
+    //adjust yawAdjustFR and yawAdjustLR
+    //counterclockwise increases YAW number, clockwise decreases
+   // FR spins CW, imparts CCW spin
+    //if ( sensorPackage.getYaw < targetHeading ){
+      
     Serial.print("turning to heading: ");
     Serial.println(targetHeading);
+    yawSetpoint = targetHeading;
   }
 }
 
