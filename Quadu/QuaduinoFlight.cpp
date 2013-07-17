@@ -85,7 +85,7 @@ void QuaduinoFlight::setupPidControl() {
 
   yawSetpoint = 0.0; // no rotation
   rollSetpoint = 90; // level
-  pitchSetpoint = 181; // level
+  pitchSetpoint = 180; // level
   altitudeSetpoint = 0.0; // no change
   
   Serial.println("PIDs complete");
