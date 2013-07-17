@@ -32,6 +32,10 @@ PID::PID(double* Input, double* Output, double* Setpoint, double Kp, double Ki, 
   //the arduino pwm limits
 
   SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
+  gamma = 0.1;
+  kpAdj = 0;
+  kiAdj = 0;
+  kdAdj = 0;
 
   PID::SetControllerDirection(ControllerDirection);
   PID::SetTunings(Kp, Ki, Kd);
@@ -75,13 +79,25 @@ bool PID::Compute()
     /*Compute all the working error variables*/
     double input = *myInput;
     double error = *mySetpoint - input;
-    ITerm+= (ki * error);
+    
+    //self learning and i-term adjuster
+    double integrator = ki * error * timeChange;
+    kiAdj += 2 * error * gamma * integrator * timeChange;
+    
+    ITerm+= (integrator * kiAdj);
     if(ITerm > outMax) ITerm= outMax;
     else if(ITerm < outMin) ITerm= outMin;
     double dInput = (input - lastInput);
-
+    //derivative adj
+    double derivative = kd * dInput / timeChange;
+    kdAdj = gamma * error * derivative * timeChange;
+    
+    //p-term adj
+    kpAdj = kp * 2 * error * gamma * timeChange;
+    double pTerm = kp * error * kpAdj;
+    
     /*Compute PID Output*/
-    double output = kp * error + ITerm- kd * dInput;
+    double output = pTerm + ITerm + (kdAdj * derivative);
 
     if(output > outMax) output = outMax;
     else if(output < outMin) output = outMin;
