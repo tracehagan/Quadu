@@ -49,8 +49,6 @@
 // motor control library files
 #include "PID_v1.h"
 
-//UNCOMMNENT AND COMMENT TO DO DEBUGGING 
-
 //#define DEBUG_MotorSketch
 //#define DEBUG_DataSketch
 //#define DEBUG_RadioDataSketch
@@ -66,6 +64,8 @@
 void setupPins();
 
 unsigned long previousTime = 0;
+
+bool running = false;
 
 // =============================================================
 // INITIAL SETUP
@@ -93,6 +93,7 @@ void setup()
   }
   Serial.println("0... ");
   delay(1000);
+  running = true;
 }
 
 void setupPins() {
@@ -119,6 +120,7 @@ uint32_t lastMic;
 uint16_t benchMic = 13000;
 
 void loop() {
+  
 #ifdef DEBUG_MotorSketch
   //Motor Sketch:
   flightController.runMotorsFullRange();
@@ -161,30 +163,36 @@ void loop() {
    }
    */
    
-   //Serial.println(sensorPackage.getYaw());
-  
-   //Serial.println(sensorPackage.getYaw());
-   flightController.adjustYaw(sensorPackage.getYaw()); 
-  
-  /* //Serial.println(sensorPackage.getRoll());
-  if(sensorPackage.getBatteryPercent() >= 70) {
+   // Serial.println(sensorPackage.getBatteryPercent());
+   //flightController.adjustPitch(sensorPackage.getPitch());
+   if (flightController.checkOrientation(sensorPackage.getPitch(), sensorPackage.getRoll())){
+     running = false;
+   }
+
+ 
+//   Serial.println(sensorPackage.getPitch());
+  if(sensorPackage.getBatteryPercent() >= 60 && running) {
     // Flight Commands
     flightController.startAutonomy();
-    flightController.hover(&frameCount, 0, 5);
-    //flightController.hover(&frameCount, 4, 7);
-    flightController.decreaseAltitude(&frameCount, 5, 20, 20);
-    flightController.killMotors(&frameCount, 20);
+    flightController.increaseAltitude(&frameCount, 0, 3, 20);
+    //flightController.increaseAltitude(&frameCount, 0, 1, 20);
+    //flightController.moveRight(&frameCount, 3, 5, 7);
+    //flightController.moveForward(&frameCount, 3, 8, 7);
+   // flightController.moveForward(&frameCount, 8, 11, 10);
+    //flightController.increaseAltitude(&frameCount, 3, 5, 10);
+    //flightController.increaseAltitude(&frameCount, 4, 5, 20);
+    flightController.hover(&frameCount, 3, 10);
+    //flightController.moveLeft(&frameCount, 9, 11, 7);
+    flightController.decreaseAltitude(&frameCount, 10, 15, 15);
+    flightController.killMotors(&frameCount, 15);
     
     // Adjust all PIDs before applying to motors
     flightController.adjustRoll(sensorPackage.getRoll());
     flightController.adjustPitch(sensorPackage.getPitch());
-    flightController.adjustYaw(sensorPackage.getYaw());
-  } else if(sensorPackage.getBatteryPercent()>= 60 && sensorPackage.getBatteryPercent() < 70) {
-    flightController.decreaseAltitude(&frameCount, 0, 100, 20);
-  } else {
-    flightController.killMotors(&frameCount, 0);
-  }
-*/
+   } else {
+     flightController.killMotors(&frameCount, 0);
+   }
+
   // Every 13500 microseconds, increment our frame counter.
   // 74.074074074.. frames per second
   if(micros() - lastMic > benchMic) {
@@ -192,7 +200,6 @@ void loop() {
     frameCount++;
   }
 #endif
-
 
 
 }

@@ -32,13 +32,6 @@ PID::PID(double* Input, double* Output, double* Setpoint, double Kp, double Ki, 
   //the arduino pwm limits
 
   SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
-<<<<<<< HEAD
-=======
-  gamma = 0.01;
-  kpAdj = 0;
-  kiAdj = 0;
-  kdAdj = 0;
->>>>>>> 5141d323ab183f1b4f93361535875aef4e9cb279
 
   PID::SetControllerDirection(ControllerDirection);
   PID::SetTunings(Kp, Ki, Kd);
@@ -56,10 +49,7 @@ void PID::init(double* Input, double* Output, double* Setpoint, double Kp, doubl
   //the arduino pwm limits
 
   SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
-  gamma = 0.01;
-  kpAdj = 0;
-  kiAdj = 0;
-  kdAdj = 0;
+
   PID::SetControllerDirection(ControllerDirection);
   PID::SetTunings(Kp, Ki, Kd);
 

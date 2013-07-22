@@ -59,10 +59,6 @@ private:
   double kp;                  // * (P)roportional Tuning Parameter
   double ki;                  // * (I)ntegral Tuning Parameter
   double kd;                  // * (D)erivative Tuning Parameter
-  double gamma;
-  double kpAdj;
-  double kiAdj;
-  double kdAdj;
 
   int controllerDirection;
 

@@ -107,6 +107,7 @@ public:
   // =============================================================
   // ADJUST PITCH/ROLL/YAW USING PID/STEERING
   // =============================================================
+  boolean checkOrientation(double pitchIn, double rollIn);
   boolean adjustPitch(double pitchIn);
   boolean adjustRoll(double rollIn);
   boolean adjustYaw(double yawIn);
@@ -144,7 +145,7 @@ public:
   bool getRollTuningActive();
   bool getPitchTuningActive();
   bool getYawTuningActive();
-
+ 
   double getYawPIDOutput();
   double getRollPIDOutput();
   double getPitchPIDOutput();
